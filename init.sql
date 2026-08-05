@@ -1,14 +1,109 @@
--- This file runs against the default `postgres` database when the container
--- first starts. Build your schema here, then re-run ./setup.sh.
---
--- Typical pattern (see cars-database for a fuller example):
---
--- CREATE DATABASE instagram;
--- \connect instagram
---
--- CREATE TABLE users (
---   id SERIAL PRIMARY KEY,
---   ...
--- );
---
--- INSERT INTO users VALUES (...);
+CREATE TABLE IF NOT EXISTS "user" (
+	"id" SERIAL NOT NULL UNIQUE,
+	"email" VARCHAR(255) NOT NULL UNIQUE,
+	"password" VARCHAR(255) NOT NULL,
+	"bio" VARCHAR(255) NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "post" (
+	"id" SERIAL NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"caption" VARCHAR(255),
+	"image_url" VARCHAR(255),
+	"posted_at" TIMESTAMP,
+	PRIMARY KEY("id")
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "comment" (
+	"id" SERIAL NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"post_id" INTEGER,
+	"parent_comment_id" INTEGER,
+	PRIMARY KEY("id"),
+	CHECK (
+		(post_id IS NOT NULL AND parent_comment_id IS NULL) OR
+		(post_id IS NULL AND parent_comment_id IS NOT NULL)
+	)
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "ig_likes" (
+	"id" SERIAL NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "follow" (
+	"id" SERIAL NOT NULL,
+	"follower_id" INTEGER NOT NULL,
+	"followed_id" INTEGER NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "postlike" (
+	"id" SERIAL NOT NULL,
+	"like_id" INTEGER NOT NULL,
+	"post_id" INTEGER NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS "commentlike" (
+	"id" SERIAL NOT NULL,
+	"like_id" INTEGER NOT NULL,
+	"comment_id" INTEGER NOT NULL,
+	PRIMARY KEY("id")
+);
+
+
+
+ALTER TABLE "post"
+ADD FOREIGN KEY("user_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "comment"
+ADD FOREIGN KEY("user_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "ig_likes"
+ADD FOREIGN KEY("user_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "postlike"
+ADD FOREIGN KEY("like_id") REFERENCES "ig_likes"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "postlike"
+ADD FOREIGN KEY("post_id") REFERENCES "post"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "commentlike"
+ADD FOREIGN KEY("comment_id") REFERENCES "comment"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "commentlike"
+ADD FOREIGN KEY("like_id") REFERENCES "ig_likes"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "follow"
+ADD FOREIGN KEY("follower_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "follow"
+ADD FOREIGN KEY("followed_id") REFERENCES "user"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "comment"
+ADD FOREIGN KEY("post_id") REFERENCES "post"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE "comment"
+ADD FOREIGN KEY("parent_comment_id") REFERENCES "comment"("id")
+ON UPDATE NO ACTION ON DELETE NO ACTION;
