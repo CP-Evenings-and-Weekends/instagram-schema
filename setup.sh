@@ -4,6 +4,6 @@
 # first, then re-run this script.
 
 docker build -t instagram_db .
-docker run --name pg_db --rm -e POSTGRES_PASSWORD=password -d instagram_db
+docker run --name pg_instagram --rm -e POSTGRES_PASSWORD=password -d instagram_db
 sleep 3 # give postgres time to get ready
-docker exec -it pg_db psql -h localhost -p 5432 -U postgres
+docker exec -it pg_instagram psql -h localhost -p 5432 -U postgres
