@@ -2,7 +2,7 @@
 
 Design and implement a Postgres schema for a simplified Instagram — focusing on the **self-referential follow** relationship, which is the trickiest part of this schema.
 
-> If you did Saturday's [Schema Design](https://github.com/CP-Evenings-and-Weekends/schema-design) challenge, you already drew an ERD for Instagram.  **Pull that diagram back up** as your starting point — today's job is to turn it into actual Postgres tables, seed it, and query it.  If you skipped Instagram on Saturday, do that ERD now before you start.
+> If you did the optional [Schema Design](https://github.com/CP-Evenings-and-Weekends/schema-design) warm-up, you already drew an ERD for Instagram — pull it back up. If not, no problem: sketch a quick ERD now before writing SQL.
 
 The included `init.sql`, `Dockerfile`, and `setup.sh` are wired up like [cars-database](https://github.com/CP-Evenings-and-Weekends/cars-database).
 
@@ -20,13 +20,13 @@ Aim for what Instagram had at launch:
 
 ### 1. Confirm or revise the ERD
 
-Use Saturday's diagram (or build one now) in [dbdiagram.io](https://dbdiagram.io/) or [Quick Database Diagrams](https://www.quickdatabasediagrams.com/).  Commit a screenshot as `erd.png` or a Mermaid `erDiagram` block as `erd.md`.
+Use your warm-up diagram (or build one now) in [dbdiagram.io](https://dbdiagram.io/) or [Quick Database Diagrams](https://www.quickdatabasediagrams.com/).  Commit a screenshot as `erd.png` or a Mermaid `erDiagram` block as `erd.md`.
 
 You'll likely have: `users`, `posts`, `comments`, `likes`, `follows`.
 
 ### 2. Implement in `init.sql`
 
-Translate the ERD into `CREATE TABLE` statements.  Conventions from Saturday: plural lowercase table names, `id` primary keys, `_id` foreign keys.
+Translate the ERD into `CREATE TABLE` statements.  Conventions for your tables: plural, lowercase table names (`users`, `orders`); an `id` primary key on every table; `_id` suffixes on foreign keys (`user_id`). (This is Django's convention — you'll meet it again in Module 5.)
 
 For **`follows`** specifically, you need two foreign keys back to `users`.  Name them clearly:
 
